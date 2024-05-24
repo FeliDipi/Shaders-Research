@@ -14,7 +14,7 @@ Shader "Custom/AntiAliasedSprite"
                 "IgnoreProjector" = "True"
                 "RenderType" = "Transparent"
             }
-
+            Blend SrcAlpha OneMinusSrcAlpha
             Pass
             {
                 CGPROGRAM
@@ -58,9 +58,10 @@ Shader "Custom/AntiAliasedSprite"
                     alphaEdge *= 0.25;
 
                     float edgeFactor = saturate((_OutlineWidth * _ScreenParams.x) / fwidth(alphaEdge));
+                    edgeFactor = pow(edgeFactor, _AntialiasingStrength); // Apply antialiasing strength
 
                     float antialiasedAlpha = lerp(color.a, alphaEdge, edgeFactor);
-                    return float4(color.rgb * antialiasedAlpha, antialiasedAlpha);
+                    return float4(color.rgb, antialiasedAlpha);
                 }
                 ENDCG
             }

@@ -4,6 +4,7 @@ Shader "Custom/Blur"
     {
         _MainTex("Texture", 2D) = "white" {}
         _BlurSize("Blur Size", Range(0.0,15.0)) = 0.0
+        _BlurDirection("Blur Direction", Vector) = (1,0,0,0)
     }
         SubShader
         {
@@ -34,6 +35,7 @@ Shader "Custom/Blur"
                 sampler2D _MainTex;
                 float4 _MainTex_ST;
                 float _BlurSize;
+                float4 _BlurDirection;
 
                 v2f vert(appdata_t v)
                 {
@@ -46,6 +48,7 @@ Shader "Custom/Blur"
                 fixed4 frag(v2f i) : SV_Target
                 {
                     float2 uv = i.uv;
+                    float2 direction = _BlurDirection.xy;
                     float4 color = float4(0, 0, 0, 0);
 
                     //custom blur values
@@ -57,9 +60,8 @@ Shader "Custom/Blur"
                         0.0162162162
                     };
 
-                    float2 offset = float2(_BlurSize / _ScreenParams.x, 0);
+                    float2 offset = float2(_BlurSize / _ScreenParams.x * direction.x, _BlurSize / _ScreenParams.y * direction.y);
 
-                    //blur effect just affected on horizontal axis
                     color += tex2D(_MainTex, uv) * weights[0];
                     for (int j = 1; j < 5; j++)
                     {
