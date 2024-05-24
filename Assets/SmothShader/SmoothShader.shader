@@ -1,4 +1,4 @@
-Shader "Custom/AntiAliasedSprite"
+Shader "Custom/Antialising"
 {
     Properties
     {
