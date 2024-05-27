@@ -1,4 +1,4 @@
-Shader "Custom/Highlight"
+Shader "Custom/HighlightDynamic"
 {
     Properties
     {
@@ -28,7 +28,6 @@ Shader "Custom/Highlight"
                 #pragma vertex vert
                 #pragma fragment frag
                 #include "UnityCG.cginc"
-
 
                 struct appdata_t
                 {
@@ -70,7 +69,6 @@ Shader "Custom/Highlight"
                     }
 
                     float2 direction = normalize(_Direction.xy);
-
                     float projection = dot(i.uv - 0.5, direction) + 0.5;
 
                     float highlightFactor = smoothstep(_HighlightStrength, 1.0, projection) * _HighlightIntensity;

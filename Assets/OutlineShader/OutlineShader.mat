@@ -42,7 +42,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _EnableExternalAlpha: 0
-    - _OutlineStroke: 1
+    - _OutlineStroke: 1.1
     - _OutlineThickness: 10
     - _SpriteScale: 1.06
     - _SpriteScale2: 1

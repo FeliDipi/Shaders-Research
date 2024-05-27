@@ -36,7 +36,7 @@ Shader "Custom/Outline"
             };
 
             sampler2D _MainTex;
-            float4 _MainTex_TexelSize;    // This is filled out by inspector, it gets size of
+            float4 _MainTex_TexelSize;
             fixed4 _OutlineColor;
             float _OutlineStroke;
 
