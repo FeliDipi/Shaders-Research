@@ -3,25 +3,19 @@ Shader "Custom/Highlight"
     Properties
     {
         _MainTex("Sprite Texture", 2D) = "white" {}
-        _MaskTex("Mask Texture", 2D) = "white" {}
         _HighlightColor("Highlight Color", Color) = (1,1,1,1)
         _ShadowColor("Shadow Color", Color) = (0,0,0,1)
+        _HighlightStrength("Highlight Strength", Range(0,1)) = 0.5
         _HighlightIntensity("Highlight Intensity", Range(0, 1)) = 0.5
+        _ShadowStrength("Shadow Strength", Range(0,1)) = 0.5
         _ShadowIntensity("Shadow Intensity", Range(0, 1)) = 0.5
         _Direction("Effect Direction", Vector) = (0,1,0,0)
     }
 
         SubShader
         {
-            Tags { "Queue" = "Transparent" "RenderType" = "Transparent" }
+            Tags { "Queue" = "Transparent" "RenderType" = "Transparent" "IgnoreProjector" = "True" "PreviewType" = "Plane" }
             LOD 100
-
-            Stencil
-            {
-                Ref 0
-                Comp equal
-                Pass Replace
-            }
 
             Pass
             {
@@ -34,6 +28,7 @@ Shader "Custom/Highlight"
                 #pragma vertex vert
                 #pragma fragment frag
                 #include "UnityCG.cginc"
+
 
                 struct appdata_t
                 {
@@ -48,11 +43,12 @@ Shader "Custom/Highlight"
                 };
 
                 sampler2D _MainTex;
-                sampler2D _MaskTex;
                 float4 _MainTex_ST;
                 float4 _HighlightColor;
                 float4 _ShadowColor;
+                float _HighlightStrength;
                 float _HighlightIntensity;
+                float _ShadowStrength;
                 float _ShadowIntensity;
                 float4 _Direction;
 
@@ -66,29 +62,30 @@ Shader "Custom/Highlight"
 
                 fixed4 frag(v2f i) : SV_Target
                 {
-                    fixed4 maskColor = tex2D(_MaskTex, i.uv);
-
-                    if (maskColor.a == 0)
-                    {
-                        return float4(0, 0, 0, 0);
-                    }
-
                     fixed4 texColor = tex2D(_MainTex, i.uv);
+
+                    if (texColor.a < 0.1)
+                    {
+                        discard;
+                    }
 
                     float2 direction = normalize(_Direction.xy);
 
                     float projection = dot(i.uv - 0.5, direction) + 0.5;
 
-                    float highlightFactor = smoothstep(0.5, 1.0, projection) * _HighlightIntensity;
-                    float shadowFactor = smoothstep(0.5, 0.0, projection) * _ShadowIntensity;
+                    float highlightFactor = smoothstep(_HighlightStrength, 1.0, projection) * _HighlightIntensity;
+                    float shadowFactor = smoothstep(_ShadowStrength, 0.0, projection) * _ShadowIntensity;
 
                     fixed4 highlightColor = lerp(texColor, _HighlightColor, highlightFactor);
                     fixed4 finalColor = lerp(highlightColor, _ShadowColor, shadowFactor);
 
-                    finalColor.a = texColor.a;
+                    finalColor.a *= texColor.a;
+                    finalColor.rgb = lerp(texColor.rgb, finalColor.rgb, finalColor.a);
+
                     return finalColor;
                 }
                 ENDCG
             }
         }
+            FallBack "Diffuse"
 }
