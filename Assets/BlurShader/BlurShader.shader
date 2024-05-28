@@ -1,16 +1,18 @@
-Shader "Custom/Blur"
+Shader "Custom/BlurWithPadding"
 {
     Properties
     {
         _MainTex("Texture", 2D) = "white" {}
-        _BlurSize("Blur Size", Range(0.0,15.0)) = 0.0
-        _BlurDirection("Blur Direction", Vector) = (1,0,0,0)
+        _BlurSize("Blur Size", Range(0.0, 15.0)) = 0.0
+        _BlurDirection("Blur Direction", Vector) = (1, 0, 0, 0)
     }
         SubShader
         {
             Tags { "Queue" = "Transparent" "IgnoreProjector" = "True" "RenderType" = "Transparent" }
             LOD 100
 
+            Cull Off
+            ZWrite Off
             Blend SrcAlpha OneMinusSrcAlpha
 
             Pass
@@ -51,7 +53,6 @@ Shader "Custom/Blur"
                     float2 direction = _BlurDirection.xy;
                     float4 color = float4(0, 0, 0, 0);
 
-                    //custom blur values
                     float weights[5] = {
                         0.2270270270,
                         0.1945945946,
@@ -68,6 +69,8 @@ Shader "Custom/Blur"
                         color += tex2D(_MainTex, uv + offset * j) * weights[j];
                         color += tex2D(_MainTex, uv - offset * j) * weights[j];
                     }
+
+                    color = saturate(color);
 
                     return color;
                 }
