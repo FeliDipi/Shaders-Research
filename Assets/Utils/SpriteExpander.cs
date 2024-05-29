@@ -19,7 +19,11 @@ public class SpriteExpander : MonoBehaviour
         Sprite expandedSprite = ExpandSpriteGeometry(originalSprite, _expandFactor);
 
         if(_spr!=null) _spr.sprite = expandedSprite;
-        else _img.sprite = expandedSprite;
+        else
+        {
+            _img.sprite = expandedSprite;
+            _img.SetNativeSize();
+        }
     }
 
     Sprite ExpandSpriteGeometry(Sprite originalSprite, float factor)
