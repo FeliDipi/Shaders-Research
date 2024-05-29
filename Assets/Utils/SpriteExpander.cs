@@ -21,8 +21,10 @@ public class SpriteExpander : MonoBehaviour
         if(_spr!=null) _spr.sprite = expandedSprite;
         else
         {
+            Vector2 newDimension = _img.rectTransform.rect.size * _expandFactor;
+
             _img.sprite = expandedSprite;
-            _img.SetNativeSize();
+            _img.rectTransform.sizeDelta = newDimension;
         }
     }
 
