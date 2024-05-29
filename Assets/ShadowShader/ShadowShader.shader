@@ -9,7 +9,16 @@ Shader "Custom/OutBoundsWithShadowUI"
     }
         SubShader
         {
-            Tags { "Queue" = "Overlay" "IgnoreProjector" = "True" "RenderType" = "Transparent" }
+            Tags
+            {
+                "RenderPipeline" = "UniversalPipeline"
+                "RenderType" = "Transparent"
+                "UniversalMaterialType" = "Lit"
+                "Queue" = "Transparent"
+                "ShaderGraphShader" = "true"
+                "ShaderGraphTargetId" = "UniversalSpriteLitSubTarget"
+            }
+
             Blend SrcAlpha OneMinusSrcAlpha
             Cull Off
             ZWrite Off
@@ -17,6 +26,12 @@ Shader "Custom/OutBoundsWithShadowUI"
 
             Pass
             {
+                Name "Sprite Lit"
+                Tags
+                {
+                    "LightMode" = "Universal2D"
+                }
+
                 CGPROGRAM
                 #pragma vertex vert
                 #pragma fragment frag
@@ -59,21 +74,21 @@ Shader "Custom/OutBoundsWithShadowUI"
                     bool isMainCoordValid = scaledCoord.x >= 0 && scaledCoord.x <= 1 && scaledCoord.y >= 0 && scaledCoord.y <= 1;
                     bool isShadowCoordValid = shadowCoord.x >= 0 && shadowCoord.x <= 1 && shadowCoord.y >= 0 && shadowCoord.y <= 1;
 
-                    half4 mainColor = fixed4(0, 0, 0, 0);
+                    half4 mainColor = half4(0, 0, 0, 0);
                     if (isMainCoordValid)
                     {
                         mainColor = tex2D(_MainTex, scaledCoord);
                         mainColor.rgb *= mainColor.a;
                     }
 
-                    half4 shadowColor = fixed4(0, 0, 0, 0);
+                    half4 shadowColor = half4(0, 0, 0, 0);
                     if (isShadowCoordValid)
                     {
                         shadowColor = tex2D(_MainTex, shadowCoord) * _ShadowColor;
                         shadowColor.rgb *= shadowColor.a;
                     }
 
-                    // Only apply the shadow where the main texture is transparent
+                    // Only apply the shadow where the main texture is transparent and the mask allows
                     half4 finalColor = mainColor + shadowColor * (1.0 - mainColor.a);
 
                     return finalColor;
@@ -81,5 +96,5 @@ Shader "Custom/OutBoundsWithShadowUI"
                 ENDCG
             }
         }
-        FallBack "UI/Default"
+            FallBack "UI/Default"
 }
