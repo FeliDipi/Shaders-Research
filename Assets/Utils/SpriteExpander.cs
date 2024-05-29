@@ -1,22 +1,25 @@
 using UnityEngine;
+using UnityEngine.UI;
 
-[RequireComponent(typeof(SpriteRenderer))]
 public class SpriteExpander : MonoBehaviour
 {
     [SerializeField] private float _expandFactor = 2.0f;
     private SpriteRenderer _spr;
+    private Image _img;
 
     private void Awake()
     {
         _spr = GetComponent<SpriteRenderer>();
+        _img = GetComponent<Image>();
     }
 
     void Start()
     {
-        Sprite originalSprite = _spr.sprite;
+        Sprite originalSprite = (_spr!=null)? _spr.sprite : _img.sprite;
         Sprite expandedSprite = ExpandSpriteGeometry(originalSprite, _expandFactor);
 
-        _spr.sprite = expandedSprite;
+        if(_spr!=null) _spr.sprite = expandedSprite;
+        else _img.sprite = expandedSprite;
     }
 
     Sprite ExpandSpriteGeometry(Sprite originalSprite, float factor)
