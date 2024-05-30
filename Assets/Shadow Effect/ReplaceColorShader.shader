@@ -1,11 +1,9 @@
-Shader "Custom/OutBoundsWithShadowUI"
+Shader "Custom/ChangeColorWithAlpha"
 {
     Properties
     {
         _MainTex("Texture", 2D) = "white" {}
-        _ShadowOffset("Shadow Offset", Vector) = (0.05, -0.05, 0, 0)
-        _ShadowColor("Shadow Color", Color) = (0,0,0,1)
-        _ExpandFactor("Expand Factor", Float) = 2.0
+        _NewColor("New Color", Color) = (1,1,1,1)
         _StencilComp("Stencil Comparison", Float) = 8
         _Stencil("Stencil ID", Float) = 0
         _StencilOp("Stencil Operation", Float) = 0
@@ -32,12 +30,6 @@ Shader "Custom/OutBoundsWithShadowUI"
 
             Pass
             {
-                Name "Sprite Lit"
-                Tags
-                {
-                    "LightMode" = "Universal2D"
-                }
-
                 Stencil
                 {
                     Ref[_Stencil]
@@ -68,49 +60,29 @@ Shader "Custom/OutBoundsWithShadowUI"
 
                 sampler2D _MainTex;
                 float4 _MainTex_ST;
-                float4 _ShadowOffset;
-                float4 _ShadowColor;
-                float _ExpandFactor;
+                float4 _NewColor;
 
                 v2f vert(appdata_t v)
                 {
-                    v.vertex.xyz *= _ExpandFactor;
                     v2f o;
                     o.vertex = UnityObjectToClipPos(v.vertex);
-                    o.uv = v.uv;
+                    o.uv = TRANSFORM_TEX(v.uv, _MainTex);
                     return o;
                 }
 
                 fixed4 frag(v2f i) : SV_Target
                 {
-                    float2 scaledCoord = (i.uv - 0.5) * _ExpandFactor + 0.5;
-                    float2 shadowCoord = scaledCoord + _ShadowOffset.xy;
+                    // Sample the original texture
+                    fixed4 original = tex2D(_MainTex, i.uv);
 
-                    // Check if the main texture coordinates are out of bounds
-                    bool isMainCoordValid = scaledCoord.x >= 0 && scaledCoord.x <= 1 && scaledCoord.y >= 0 && scaledCoord.y <= 1;
-                    bool isShadowCoordValid = shadowCoord.x >= 0 && shadowCoord.x <= 1 && shadowCoord.y >= 0 && shadowCoord.y <= 1;
+                // Create a new color with the alpha from the original texture
+                fixed4 newColor = _NewColor;
+                newColor.a = original.a;
 
-                    half4 mainColor = half4(0, 0, 0, 0);
-                    if (isMainCoordValid)
-                    {
-                        mainColor = tex2D(_MainTex, scaledCoord);
-                        mainColor.rgb *= mainColor.a;
-                    }
-
-                    half4 shadowColor = half4(0, 0, 0, 0);
-                    if (isShadowCoordValid)
-                    {
-                        shadowColor = tex2D(_MainTex, shadowCoord) * _ShadowColor;
-                        shadowColor.rgb *= shadowColor.a;
-                    }
-
-                    // Only apply the shadow where the main texture is transparent and the mask allows
-                    half4 finalColor = mainColor + shadowColor * (1.0 - mainColor.a);
-
-                    return finalColor;
-                }
-                ENDCG
+                return newColor;
             }
+            ENDCG
+        }
         }
             FallBack "UI/Default"
 }

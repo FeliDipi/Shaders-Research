@@ -11,9 +11,12 @@ public class SpriteMaskMaker : MonoBehaviour
 
     protected Camera _camera;
 
+    private float _originalSize;
+
     protected void Awake()
     {
         _camera = Camera.main;
+        _originalSize = _camera.orthographicSize;
     }
 
     private void Start()
@@ -41,6 +44,7 @@ public class SpriteMaskMaker : MonoBehaviour
         capturedTexture.Apply();
 
         _camera.targetTexture = null;
+        _camera.orthographicSize = _originalSize;
         RenderTexture.active = null;
         Destroy(renderTexture);
 
@@ -92,16 +96,20 @@ public class SpriteMaskMaker : MonoBehaviour
 
     private Vector2Int WorldToTextureCoordinates(Vector3 worldPos, Camera cam, int texWidth, int texHeight)
     {
-        Vector3 localPos = _reference.transform.InverseTransformPoint(worldPos);
+        Vector3 screenPos = cam.WorldToScreenPoint(worldPos);
         Vector2 texturePos = new Vector2(
-            (localPos.x + _reference.bounds.size.x / 2) / _reference.bounds.size.x * texWidth,
-            (localPos.y + _reference.bounds.size.y / 2) / _reference.bounds.size.y * texHeight);
+            screenPos.x / cam.pixelWidth * texWidth,
+            screenPos.y / cam.pixelHeight * texHeight);
         return new Vector2Int(Mathf.RoundToInt(texturePos.x), Mathf.RoundToInt(texturePos.y));
     }
 
     protected virtual void SetupNewSprite(Sprite newSprite)
     {
-        _reference.sprite = newSprite;
-        _reference.material = _customMaterial;
+        SpriteRenderer test = new GameObject("TEST").AddComponent<SpriteRenderer>();
+        test.sprite = newSprite;
+        test.material = _customMaterial;
+
+        //_reference.sprite = newSprite;
+        //_reference.material = _customMaterial;
     }
 }
