@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: ReplaceColorShader
-  m_Shader: {fileID: 4800000, guid: 7e6cb751533a7df49b714f8e6ce2464b, type: 3}
+  m_Name: GlowShader
+  m_Shader: {fileID: 4800000, guid: 0b655e28596bae1478be4c8a0839d238, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -19,7 +19,7 @@ Material:
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
-  m_LockedProperties: 
+  m_LockedProperties: _GlowColor
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -29,12 +29,19 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _BlurAmount: 10
     - _ColorMask: 15
+    - _ExpandFactor: 2
+    - _GlowAmount: 10
+    - _GlowIntensity: 0
+    - _OutlineThickness: 0.03
     - _Stencil: 0
     - _StencilComp: 8
     - _StencilOp: 0
     - _StencilReadMask: 255
     - _StencilWriteMask: 255
+    - _Threshold: 0
     m_Colors:
-    - _NewColor: {r: 0, g: 0, b: 0, a: 1}
+    - _GlowColor: {r: 1, g: 1, b: 0, a: 1}
+    - _OutlineColor: {r: 1, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []
