@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class CropperImage : MonoBehaviour
+public class ImageCutter : MonoBehaviour
 {
     [Header("Cropper Dependencies")]
     [SerializeField] private int _renderLayerIndex;
