@@ -3,18 +3,18 @@ using UnityEngine.UI;
 
 public class ImageCutter : MonoBehaviour
 {
-    [Header("Cropper Dependencies")]
+    [Header("Cutter Dependencies")]
     [SerializeField] private int _renderLayerIndex;
     [SerializeField] private Camera _renderCamera;
     [SerializeField] private RenderTexture _renderTexture;
     [SerializeField] private Canvas _renderCanvas;
 
-    [Header("Cropper Target Properties")]
-    public Image _target;
-    public Image _output;
+    [Header("Cutter Target Properties")]
+    [SerializeField] private Image _target;
+    [SerializeField] private Image _output;
 
-    [ContextMenu("Create Cropped Texture")]
-    public void Capture()
+    [ContextMenu("Create Cuted Texture")]
+    public void Cut()
     {
         if (_renderCamera == null || _renderTexture == null || _target == null || _output == null)
         {
@@ -53,7 +53,7 @@ public class ImageCutter : MonoBehaviour
         DestroyImmediate(targetCloned);
     }
 
-    void AdjustCanvasSize()
+    private void AdjustCanvasSize()
     {
         RectTransform canvasRectTransform = _renderCanvas.GetComponent<RectTransform>();
         RectTransform imageRectTransform = _target.GetComponent<RectTransform>();
@@ -66,7 +66,7 @@ public class ImageCutter : MonoBehaviour
         canvasRectTransform.position = imageRectTransform.position;
     }
 
-    void AdjustCameraToCanvas()
+    private void AdjustCameraToCanvas()
     {
         RectTransform canvasRect = _renderCanvas.GetComponent<RectTransform>();
 
@@ -81,5 +81,16 @@ public class ImageCutter : MonoBehaviour
             canvasRect.position.y,
             _renderCamera.transform.position.z
         );
+    }
+
+    public void SetupCutter(Image target, Image output)
+    {
+        _target = target;
+        _output = output;
+    }
+
+    public void SetupCutter(Image target)
+    {
+        _target = _output = target;
     }
 }
