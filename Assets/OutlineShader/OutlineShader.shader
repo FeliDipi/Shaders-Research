@@ -3,8 +3,8 @@ Shader "Custom/Outline"
     Properties
     {
         _MainTex("Sprite Texture", 2D) = "white" {}
-        _OutlineStroke("SpriteScale", Range(-1, 10.0)) = 1.0
-        _OutlineColor("Tint", Color) = (1,1,1,1)
+        _OutlineStroke("Outline Stroke", Range(-1, 10.0)) = 1.0
+        _OutlineColor("Outline Color", Color) = (1,1,1,1)
     }
 
         SubShader

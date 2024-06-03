@@ -31,9 +31,10 @@ Material:
     m_Floats:
     - _BlurAmount: 10
     - _ColorMask: 15
+    - _EmissionIntensity: 0.42
     - _ExpandFactor: 2
-    - _GlowAmount: 10
-    - _GlowIntensity: 0
+    - _GlowAmount: 94.4
+    - _GlowIntensity: 0.515
     - _OutlineThickness: 0.03
     - _Stencil: 0
     - _StencilComp: 8
@@ -42,6 +43,7 @@ Material:
     - _StencilWriteMask: 255
     - _Threshold: 0
     m_Colors:
-    - _GlowColor: {r: 1, g: 1, b: 0, a: 1}
+    - _EmissionColor: {r: 1, g: 1, b: 0, a: 1}
+    - _GlowColor: {r: 0.60392165, g: 1, b: 0, a: 1}
     - _OutlineColor: {r: 1, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []
