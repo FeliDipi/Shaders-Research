@@ -5,6 +5,8 @@ namespace ImageCutter
 {
     public class ImageCutter : MonoBehaviour
     {
+        public static ImageCutter Instance { get; private set; }
+
         [Header("Cutter Dependencies")]
         [SerializeField] private int _renderLayerIndex;
         [SerializeField] private Camera _renderCamera;
@@ -14,6 +16,12 @@ namespace ImageCutter
         [Header("Cutter Target Properties")]
         [SerializeField] private Image _target;
         [SerializeField] private Image _output;
+
+        private void Awake()
+        {
+            if (Instance == null) Instance = this;
+            else Destroy(gameObject);
+        }
 
         [ContextMenu("Create Cuted Texture")]
         public void Cut()
